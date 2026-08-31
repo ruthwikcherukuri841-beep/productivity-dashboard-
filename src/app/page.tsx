@@ -11,6 +11,7 @@ import { ServiceHealth } from "@/components/dashboard/service-health";
 import { TeamWorkload } from "@/components/dashboard/team-workload";
 import { BurndownChart } from "@/components/dashboard/burndown-chart";
 import { CommandPalette } from "@/components/dashboard/command-palette";
+import { AICopilot } from "@/components/dashboard/ai-copilot";
 import { ToastContainer } from "@/components/ui/toast-container";
 import { CreateProjectModal } from "@/components/dashboard/create-project-modal";
 import { CreateTaskModal } from "@/components/dashboard/create-task-modal";
@@ -174,6 +175,9 @@ export default function DashboardPage() {
         onOpenCreateProject={() => setIsCreateProjectOpen(true)}
         onOpenCreateTask={() => setIsCreateTaskOpen(true)}
       />
+
+      {/* AI Copilot Assistant */}
+      <AICopilot />
 
       {/* Floating Toast Notification Stack */}
       <ToastContainer />

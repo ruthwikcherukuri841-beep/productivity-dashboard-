@@ -129,7 +129,23 @@ export interface ToastMessage {
   type: "success" | "info" | "warning" | "error";
 }
 
-export type DashboardTab = "overview" | "kanban" | "pipelines" | "infrastructure" | "team";
+export interface ChatAction {
+  label: string;
+  actionType: "navigate_tab" | "trigger_pipeline" | "filter_status" | "simulate_load" | "create_task";
+  payload?: any;
+}
+
+export interface ChatMessage {
+  id: string;
+  sender: "user" | "assistant";
+  text: string;
+  timestamp: string;
+  actions?: ChatAction[];
+  codeSnippet?: string;
+  isStreaming?: boolean;
+}
+
+export type DashboardTab = "overview" | "kanban" | "pipelines" | "infrastructure" | "team" | "copilot";
 export type FilterStatus = "All" | ProjectStatus;
 export type TaskFilterStatus = "All" | TaskStatus;
 export type PriorityFilter = "All" | TaskPriority;
