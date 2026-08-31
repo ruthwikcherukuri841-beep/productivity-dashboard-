@@ -194,25 +194,12 @@ npm start
 | `AI_MODEL_NAME` | *(Optional)* Model identifier for AI Copilot | `gpt-4o` |
 | `GITHUB_WEBHOOK_SECRET` | *(Optional)* Secret token for CI/CD webhooks | `your_webhook_secret_here` |
 
----
+--- 
+GitHub Repository: 👉 https://github.com/ruthwikcherukuri841-beep/productivity-dashboard-
 
-## 🚀 Deployment to Vercel
+## 🚀 Deployment: https://dashboard-one-gilt-51.vercel.app?_vercel_share=AkaMYc1hdGqmaFHoFCK0ggAdrtsibcAO
 
-### Option 1: Via Vercel CLI
-```bash
-npx vercel
-npx vercel --prod
-```
 
-### Option 2: Via GitHub Integration
-1. Push this repository to your GitHub account:
-```bash
-git remote add origin https://github.com/<YOUR_USERNAME>/<YOUR_REPO_NAME>.git
-git branch -M main
-git push -u origin main
-```
-2. Import the project on [Vercel](https://vercel.com/new).
-3. Click **Deploy** (Next.js is automatically configured with zero setup).
 
 ---
 
