@@ -67,6 +67,34 @@
 
 ---
 
+## 🌟 Key Features of Users, Projects & Tasks API
+
+### 1. 👥 Users API (`/api/v1/users`)
+- **Directory & Pagination**: Paginated listing (`?page=1&limit=20`) with total count, total pages, and navigation metadata.
+- **Fuzzy Search & Filters**: Search across `name` and `email` (`?search=term`), filter by `role` and `status` (`Active`, `Away`, `Offline`).
+- **User Registration (`POST`)**: Strict email format and uniqueness validation with `409 Conflict` duplicate prevention.
+- **Granular Updates**: Full document updates (`PUT /:id`) and partial field patches (`PATCH /:id`).
+- **Relational Lookups**:
+  - `GET /:id/tasks` — Retrieve all sprint tasks assigned to the user.
+  - `GET /:id/projects` — Retrieve all initiatives where the user is the project lead.
+- **Safe Deletion (`DELETE /:id`)**: Clean entity removal with 404 validation.
+
+### 2. 🗂️ Projects API (`/api/v1/projects`)
+- **Category & Health Filtering**: Filter by category (`Core Infrastructure`, `Frontend & Design Systems`, `Security & Identity`, `DevOps & Observability`, `AI & Machine Learning`), lifecycle status (`Planning`, `Active`, `In Progress`, `Completed`, `Paused`), and health (`On Track`, `At Risk`, `Delayed`).
+- **Initiative Creation (`POST`)**: Unique project key validation (e.g. `ENG-01`, `SEC-12`), budget, tags, lead assignment, and due date validation.
+- **Dynamic Real-Time Progress**: `GET /:id` automatically returns live computed `progress` (0–100%) and `taskCount` based on child tasks.
+- **Project Summary & Metrics (`GET /:id/summary`)**: Aggregates status distribution (`Todo`, `In Progress`, `In Review`, `Done`), story points, and estimated vs. actual logged hours.
+- **Cascade Deletion (`DELETE /:id?cascade=true`)**: Optional cascade deletion of all associated child sprint tasks.
+
+### 3. 📋 Tasks API (`/api/v1/tasks`)
+- **Sprint Backlog Multi-Filtering**: Query tasks filtered by `projectId`, `status`, `priority` (`Low`, `Medium`, `High`, `Critical`), `assigneeId`, or keyword search.
+- **Auto-Syncing Project Progress**: Creating, deleting, or status-shifting a task automatically recalculates the parent project's completion ratio.
+- **Kanban Status Transitions (`PATCH /:id/status`)**: Ultra-fast endpoint for column transitions (`Todo` ➔ `In Progress` ➔ `In Review` ➔ `Done`).
+- **Atomic Batch Reorder (`POST /tasks/reorder`)**: Reorder tasks and update column positions in a single atomic request.
+- **Story Points & Time Tracking**: Tracks story point weights (`1`, `2`, `3`, `5`, `8`, `13`), estimated hours, actual hours, and due dates.
+
+---
+
 ## 📡 Complete REST API Endpoint Reference
 
 ### 1. 👥 User Management (`/api/v1/users`)
