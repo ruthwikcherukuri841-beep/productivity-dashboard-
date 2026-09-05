@@ -1,0 +1,973 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "DevPulse Users, Projects & Tasks REST API",
+    "version": "1.0.0",
+    "description": "Production-grade RESTful backend powering user management, initiative planning, task workflows, and status synchronization for Developer Productivity Suites.",
+    "contact": {
+      "name": "DevPulse Engineering",
+      "email": "engineering@devpulse.io"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000/api/v1",
+      "description": "Local Development Server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Users",
+      "description": "User profile management, role provisioning, and user activity queries"
+    },
+    {
+      "name": "Projects",
+      "description": "Initiative lifecycle, progress aggregation, and project metrics"
+    },
+    {
+      "name": "Tasks",
+      "description": "Task CRUD, sprint backlog management, status transitions, and reordering"
+    },
+    {
+      "name": "System",
+      "description": "Health checks, uptime diagnostics, and system telemetry"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": ["System"],
+        "summary": "Health Check & Diagnostic Status",
+        "description": "Returns uptime, memory utilization, API version, and service status.",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "List Users",
+        "description": "Retrieve paginated list of users with filtering by role, status, or search keywords.",
+        "parameters": [
+          { "name": "role", "in": "query", "schema": { "$ref": "#/components/schemas/UserRole" } },
+          { "name": "status", "in": "query", "schema": { "$ref": "#/components/schemas/UserStatus" } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 20 } },
+          { "name": "sortBy", "in": "query", "schema": { "type": "string", "enum": ["name", "email", "createdAt", "role"] } },
+          { "name": "sortOrder", "in": "query", "schema": { "type": "string", "enum": ["asc", "desc"], "default": "desc" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedUsersResponse"
+                }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "post": {
+        "tags": ["Users"],
+        "summary": "Create User",
+        "description": "Register a new user profile in the system.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateUserInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserResponse" }
+              }
+            }
+          },
+          "409": { "$ref": "#/components/responses/ConflictError" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get User by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "put": {
+        "tags": ["Users"],
+        "summary": "Update User (Full)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateUserInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update User (Partial)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateUserInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Delete User",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "204": { "description": "User deleted successfully" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/users/{id}/tasks": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get Tasks Assigned to User",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of tasks assigned to this user",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TasksListResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/users/{id}/projects": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get Projects Managed by User",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of projects led by this user",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProjectsListResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "tags": ["Projects"],
+        "summary": "List Projects",
+        "description": "Retrieve projects with filtering by category, status, health, lead, or search keywords.",
+        "parameters": [
+          { "name": "category", "in": "query", "schema": { "$ref": "#/components/schemas/ProjectCategory" } },
+          { "name": "status", "in": "query", "schema": { "$ref": "#/components/schemas/ProjectStatus" } },
+          { "name": "health", "in": "query", "schema": { "$ref": "#/components/schemas/ProjectHealth" } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } },
+          { "name": "leadName", "in": "query", "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 20 } },
+          { "name": "sortBy", "in": "query", "schema": { "type": "string", "enum": ["name", "dueDate", "progress", "createdAt", "status"] } },
+          { "name": "sortOrder", "in": "query", "schema": { "type": "string", "enum": ["asc", "desc"], "default": "desc" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of projects with real-time computed progress",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PaginatedProjectsResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "post": {
+        "tags": ["Projects"],
+        "summary": "Create Project",
+        "description": "Create a new project/initiative with lead info, category, due date, and tags.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateProjectInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Project created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProjectResponse" }
+              }
+            }
+          },
+          "409": { "$ref": "#/components/responses/ConflictError" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/projects/{id}": {
+      "get": {
+        "tags": ["Projects"],
+        "summary": "Get Project by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project details with calculated progress",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProjectResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "put": {
+        "tags": ["Projects"],
+        "summary": "Update Project (Full)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateProjectInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProjectResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "patch": {
+        "tags": ["Projects"],
+        "summary": "Update Project (Partial)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateProjectInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProjectResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "409": { "$ref": "#/components/responses/ConflictError" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["Projects"],
+        "summary": "Delete Project",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "cascade", "in": "query", "schema": { "type": "boolean", "default": true }, "description": "Whether to delete all child tasks" }
+        ],
+        "responses": {
+          "204": { "description": "Project deleted successfully" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/projects/{id}/tasks": {
+      "get": {
+        "tags": ["Projects"],
+        "summary": "Get Project Tasks",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "status", "in": "query", "schema": { "$ref": "#/components/schemas/TaskStatus" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of tasks under this project",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TasksListResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/projects/{id}/summary": {
+      "get": {
+        "tags": ["Projects"],
+        "summary": "Get Project Metrics Summary",
+        "description": "Returns comprehensive task status distribution, priority breakdown, and estimate vs completed hours.",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Aggregated project breakdown",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProjectSummaryResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "List Tasks",
+        "description": "Query tasks with filtering by project, status, priority, assignee, or text search.",
+        "parameters": [
+          { "name": "projectId", "in": "query", "schema": { "type": "string" } },
+          { "name": "status", "in": "query", "schema": { "$ref": "#/components/schemas/TaskStatus" } },
+          { "name": "priority", "in": "query", "schema": { "$ref": "#/components/schemas/TaskPriority" } },
+          { "name": "assigneeName", "in": "query", "schema": { "type": "string" } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 50 } },
+          { "name": "sortBy", "in": "query", "schema": { "type": "string", "enum": ["order", "estimateHours", "priority", "status", "createdAt", "title"] } },
+          { "name": "sortOrder", "in": "query", "schema": { "type": "string", "enum": ["asc", "desc"], "default": "asc" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of tasks",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PaginatedTasksResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "post": {
+        "tags": ["Tasks"],
+        "summary": "Create Task",
+        "description": "Create a task attached to a valid project. Automatically triggers recalculation of project progress.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateTaskInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Task created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TaskResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequestError" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/tasks/reorder": {
+      "post": {
+        "tags": ["Tasks"],
+        "summary": "Batch Reorder Tasks",
+        "description": "Reorder tasks in a sprint board or column and optionally update their status.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["taskIds"],
+                "properties": {
+                  "taskIds": { "type": "array", "items": { "type": "string" } },
+                  "status": { "$ref": "#/components/schemas/TaskStatus" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tasks reordered successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TasksListResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "Get Task by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TaskResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "put": {
+        "tags": ["Tasks"],
+        "summary": "Update Task (Full)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateTaskInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TaskResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequestError" },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "patch": {
+        "tags": ["Tasks"],
+        "summary": "Update Task (Partial)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateTaskInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TaskResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequestError" },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["Tasks"],
+        "summary": "Delete Task",
+        "description": "Delete a task. Automatically recalculates parent project progress percentage.",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "204": { "description": "Task deleted successfully" },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/tasks/{id}/status": {
+      "patch": {
+        "tags": ["Tasks"],
+        "summary": "Update Task Status (Lifecycle Transition)",
+        "description": "Quick status transition (e.g. Todo -> In Progress -> In Review -> Done). Triggers automatic parent project recalculation.",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["status"],
+                "properties": {
+                  "status": { "$ref": "#/components/schemas/TaskStatus" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TaskResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserRole": {
+        "type": "string",
+        "enum": ["Engineer", "Staff Architect", "DevOps Lead", "Security Specialist", "Engineering Manager", "Product Manager", "Designer"]
+      },
+      "UserStatus": {
+        "type": "string",
+        "enum": ["Online", "Focus", "Reviewing", "Offline"]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "avatar": { "type": "string", "format": "uri" },
+          "role": { "$ref": "#/components/schemas/UserRole" },
+          "status": { "$ref": "#/components/schemas/UserStatus" },
+          "bio": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateUserInput": {
+        "type": "object",
+        "required": ["name", "email"],
+        "properties": {
+          "name": { "type": "string", "minLength": 2, "maxLength": 80 },
+          "email": { "type": "string", "format": "email" },
+          "avatar": { "type": "string", "format": "uri" },
+          "role": { "$ref": "#/components/schemas/UserRole" },
+          "status": { "$ref": "#/components/schemas/UserStatus" },
+          "bio": { "type": "string", "maxLength": 300 }
+        }
+      },
+      "UpdateUserInput": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 2, "maxLength": 80 },
+          "email": { "type": "string", "format": "email" },
+          "avatar": { "type": "string", "format": "uri" },
+          "role": { "$ref": "#/components/schemas/UserRole" },
+          "status": { "$ref": "#/components/schemas/UserStatus" },
+          "bio": { "type": "string", "maxLength": 300 }
+        }
+      },
+      "ProjectCategory": {
+        "type": "string",
+        "enum": ["Core Infrastructure", "Frontend & Design Systems", "Security & Identity", "DevOps & Observability", "AI & Machine Learning"]
+      },
+      "ProjectStatus": {
+        "type": "string",
+        "enum": ["Active", "Planning", "Completed", "On Hold"]
+      },
+      "ProjectHealth": {
+        "type": "string",
+        "enum": ["On Track", "At Risk", "Delayed"]
+      },
+      "ProjectLead": {
+        "type": "object",
+        "required": ["name", "avatar"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "avatar": { "type": "string", "format": "uri" },
+          "role": { "type": "string" }
+        }
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "key": { "type": "string" },
+          "category": { "$ref": "#/components/schemas/ProjectCategory" },
+          "description": { "type": "string" },
+          "status": { "$ref": "#/components/schemas/ProjectStatus" },
+          "progress": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "health": { "$ref": "#/components/schemas/ProjectHealth" },
+          "lead": { "$ref": "#/components/schemas/ProjectLead" },
+          "dueDate": { "type": "string", "format": "date" },
+          "taskCount": {
+            "type": "object",
+            "properties": {
+              "total": { "type": "integer" },
+              "completed": { "type": "integer" }
+            }
+          },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateProjectInput": {
+        "type": "object",
+        "required": ["name", "key", "category", "description", "lead", "dueDate"],
+        "properties": {
+          "name": { "type": "string", "minLength": 2, "maxLength": 100 },
+          "key": { "type": "string", "minLength": 2, "maxLength": 10, "example": "ENG-01" },
+          "category": { "$ref": "#/components/schemas/ProjectCategory" },
+          "description": { "type": "string", "minLength": 5, "maxLength": 1000 },
+          "status": { "$ref": "#/components/schemas/ProjectStatus" },
+          "health": { "$ref": "#/components/schemas/ProjectHealth" },
+          "lead": { "$ref": "#/components/schemas/ProjectLead" },
+          "dueDate": { "type": "string", "format": "date", "example": "2026-10-31" },
+          "tags": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "UpdateProjectInput": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 2, "maxLength": 100 },
+          "key": { "type": "string", "minLength": 2, "maxLength": 10 },
+          "category": { "$ref": "#/components/schemas/ProjectCategory" },
+          "description": { "type": "string", "minLength": 5, "maxLength": 1000 },
+          "status": { "$ref": "#/components/schemas/ProjectStatus" },
+          "health": { "$ref": "#/components/schemas/ProjectHealth" },
+          "lead": { "$ref": "#/components/schemas/ProjectLead" },
+          "dueDate": { "type": "string", "format": "date" },
+          "tags": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "TaskPriority": {
+        "type": "string",
+        "enum": ["Low", "Medium", "High", "Urgent"]
+      },
+      "TaskStatus": {
+        "type": "string",
+        "enum": ["Todo", "In Progress", "In Review", "Done"]
+      },
+      "TaskAssignee": {
+        "type": "object",
+        "required": ["name", "avatar"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "avatar": { "type": "string", "format": "uri" }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "projectId": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "priority": { "$ref": "#/components/schemas/TaskPriority" },
+          "status": { "$ref": "#/components/schemas/TaskStatus" },
+          "assignee": { "$ref": "#/components/schemas/TaskAssignee" },
+          "estimateHours": { "type": "number" },
+          "order": { "type": "integer" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateTaskInput": {
+        "type": "object",
+        "required": ["projectId", "title", "assignee"],
+        "properties": {
+          "projectId": { "type": "string" },
+          "title": { "type": "string", "minLength": 3, "maxLength": 200 },
+          "description": { "type": "string", "maxLength": 2000 },
+          "priority": { "$ref": "#/components/schemas/TaskPriority" },
+          "status": { "$ref": "#/components/schemas/TaskStatus" },
+          "assignee": { "$ref": "#/components/schemas/TaskAssignee" },
+          "estimateHours": { "type": "number", "minimum": 0.5, "maximum": 200 },
+          "order": { "type": "integer" }
+        }
+      },
+      "UpdateTaskInput": {
+        "type": "object",
+        "properties": {
+          "projectId": { "type": "string" },
+          "title": { "type": "string", "minLength": 3, "maxLength": 200 },
+          "description": { "type": "string", "maxLength": 2000 },
+          "priority": { "$ref": "#/components/schemas/TaskPriority" },
+          "status": { "$ref": "#/components/schemas/TaskStatus" },
+          "assignee": { "$ref": "#/components/schemas/TaskAssignee" },
+          "estimateHours": { "type": "number", "minimum": 0.5, "maximum": 200 },
+          "order": { "type": "integer" }
+        }
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/User" }
+        }
+      },
+      "PaginatedUsersResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/User" } },
+          "meta": { "$ref": "#/components/schemas/PaginationMeta" }
+        }
+      },
+      "ProjectResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/Project" }
+        }
+      },
+      "PaginatedProjectsResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Project" } },
+          "meta": { "$ref": "#/components/schemas/PaginationMeta" }
+        }
+      },
+      "ProjectsListResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Project" } },
+          "meta": { "type": "object", "properties": { "total": { "type": "integer" } } }
+        }
+      },
+      "TaskResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/Task" }
+        }
+      },
+      "PaginatedTasksResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Task" } },
+          "meta": { "$ref": "#/components/schemas/PaginationMeta" }
+        }
+      },
+      "TasksListResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Task" } },
+          "meta": { "type": "object", "properties": { "total": { "type": "integer" } } }
+        }
+      },
+      "ProjectSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "object",
+            "properties": {
+              "project": { "$ref": "#/components/schemas/Project" },
+              "taskMetrics": {
+                "type": "object",
+                "properties": {
+                  "totalTasks": { "type": "integer" },
+                  "completedTasks": { "type": "integer" },
+                  "completionPercentage": { "type": "integer" },
+                  "totalEstimatedHours": { "type": "number" },
+                  "completedEstimatedHours": { "type": "number" },
+                  "remainingEstimatedHours": { "type": "number" },
+                  "byStatus": { "type": "object" },
+                  "byPriority": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "status": { "type": "string", "example": "healthy" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "service": { "type": "string", "example": "DevPulse Core REST API" },
+          "version": { "type": "string", "example": "1.0.0" },
+          "uptime": { "type": "number", "example": 142.5 },
+          "memory": { "type": "object" }
+        }
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "properties": {
+          "total": { "type": "integer" },
+          "page": { "type": "integer" },
+          "limit": { "type": "integer" },
+          "totalPages": { "type": "integer" },
+          "hasNextPage": { "type": "boolean" },
+          "hasPrevPage": { "type": "boolean" }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string" },
+              "message": { "type": "string" },
+              "details": { "type": "array", "items": { "type": "object" } },
+              "statusCode": { "type": "integer" },
+              "timestamp": { "type": "string", "format": "date-time" },
+              "path": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequestError": {
+        "description": "Bad Request - Invalid query parameters or missing references",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+        }
+      },
+      "NotFoundError": {
+        "description": "Not Found - Requested entity does not exist",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+        }
+      },
+      "ConflictError": {
+        "description": "Conflict - Unique constraint violation (e.g. duplicate email or project key)",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+        }
+      },
+      "ValidationError": {
+        "description": "Unprocessable Entity - Schema validation failed",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,258 @@
+{
+  "info": {
+    "_postman_id": "8c4125b2-a4f7-4632-bc10-ef511bcf2431",
+    "name": "DevPulse REST API (Users, Projects, Tasks)",
+    "description": "Production REST API collection for user management, projects, and task lifecycle operations.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "System Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users?role=Engineer&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"],
+              "query": [
+                { "key": "role", "value": "Engineer" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/users/user-1", "host": ["{{baseUrl}}"], "path": ["users", "user-1"] }
+          }
+        },
+        {
+          "name": "Get User Assigned Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/users/user-1/tasks", "host": ["{{baseUrl}}"], "path": ["users", "user-1", "tasks"] }
+          }
+        },
+        {
+          "name": "Get User Managed Projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/users/user-1/projects", "host": ["{{baseUrl}}"], "path": ["users", "user-1", "projects"] }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jordan Reed\",\n  \"email\": \"jordan.reed@devpulse.io\",\n  \"avatar\": \"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150\",\n  \"role\": \"Engineer\",\n  \"status\": \"Online\",\n  \"bio\": \"Fullstack platform developer working on core API modules.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] }
+          }
+        },
+        {
+          "name": "Update User (Partial)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Focus\",\n  \"bio\": \"Deep focus on optimizing query caching layers.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/users/user-1", "host": ["{{baseUrl}}"], "path": ["users", "user-1"] }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/users/user-5", "host": ["{{baseUrl}}"], "path": ["users", "user-5"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "item": [
+        {
+          "name": "List Projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/projects?category=Core Infrastructure&status=Active",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects"],
+              "query": [
+                { "key": "category", "value": "Core Infrastructure" },
+                { "key": "status", "value": "Active" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Project by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/projects/proj-1", "host": ["{{baseUrl}}"], "path": ["projects", "proj-1"] }
+          }
+        },
+        {
+          "name": "Get Project Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/projects/proj-1/tasks?status=Done", "host": ["{{baseUrl}}"], "path": ["projects", "proj-1", "tasks"] }
+          }
+        },
+        {
+          "name": "Get Project Summary & Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/projects/proj-1/summary", "host": ["{{baseUrl}}"], "path": ["projects", "proj-1", "summary"] }
+          }
+        },
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Hyperion Gate Router\",\n  \"key\": \"NET-02\",\n  \"category\": \"Core Infrastructure\",\n  \"description\": \"Edge API routing mesh with automated mTLS negotiation.\",\n  \"status\": \"Planning\",\n  \"health\": \"On Track\",\n  \"lead\": {\n    \"name\": \"Alex Rivera\",\n    \"avatar\": \"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150\"\n  },\n  \"dueDate\": \"2026-11-30\",\n  \"tags\": [\"Rust\", \"eBPF\", \"Network\"]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/projects", "host": ["{{baseUrl}}"], "path": ["projects"] }
+          }
+        },
+        {
+          "name": "Update Project (Partial)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Active\",\n  \"health\": \"On Track\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/projects/proj-1", "host": ["{{baseUrl}}"], "path": ["projects", "proj-1"] }
+          }
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/projects/proj-4", "host": ["{{baseUrl}}"], "path": ["projects", "proj-4"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "List Tasks (Filtered)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tasks?status=In Progress&priority=High",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks"],
+              "query": [
+                { "key": "status", "value": "In Progress" },
+                { "key": "priority", "value": "High" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Task by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/tasks/task-1", "host": ["{{baseUrl}}"], "path": ["tasks", "task-1"] }
+          }
+        },
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"proj-1\",\n  \"title\": \"Implement connection pool warmup heuristic\",\n  \"description\": \"Pre-allocate keepalive TCP connections on system boot to eliminate initial latency spikes.\",\n  \"priority\": \"High\",\n  \"status\": \"Todo\",\n  \"assignee\": {\n    \"name\": \"Alex Rivera\",\n    \"avatar\": \"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150\"\n  },\n  \"estimateHours\": 4\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/tasks", "host": ["{{baseUrl}}"], "path": ["tasks"] }
+          }
+        },
+        {
+          "name": "Update Task Status (Quick Transition)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Done\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/tasks/task-4/status", "host": ["{{baseUrl}}"], "path": ["tasks", "task-4", "status"] }
+          }
+        },
+        {
+          "name": "Batch Reorder Tasks",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskIds\": [\"task-2\", \"task-1\", \"task-3\"],\n  \"status\": \"In Progress\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/tasks/reorder", "host": ["{{baseUrl}}"], "path": ["tasks", "reorder"] }
+          }
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/tasks/task-1", "host": ["{{baseUrl}}"], "path": ["tasks", "task-1"] }
+          }
+        }
+      ]
+    }
+  ]
+}
