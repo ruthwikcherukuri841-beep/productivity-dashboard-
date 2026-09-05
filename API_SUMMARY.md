@@ -1,80 +1,69 @@
-# ⚡ DevPulse — Users, Projects & Tasks REST API
-## Comprehensive Executive & Technical Summary
+# ⚡ DevPulse — Complete System & REST API Master Summary
+## Unified Architecture, Frontend Dashboard, REST API & Deployment Reference
 
 ---
 
-## 🚀 Live Server Endpoints & URLs
+## 🔗 Project Links & Live Access Points
 
-| Service / Interface | URL | Description |
+| Resource | Link / URL | Description |
 | :--- | :--- | :--- |
-| **Server Base URL** | `http://localhost:4000` | Local Express REST API Server |
-| **Interactive Swagger UI** | `http://localhost:4000/api-docs` | Interactive Swagger UI API Playground |
-| **OpenAPI 3.0 Spec** | `http://localhost:4000/api/v1/docs/openapi.json` | Machine-readable OpenAPI specification |
+| **GitHub Repository** | [productivity-dashboard-](https://github.com/ruthwikcherukuri841-beep/productivity-dashboard-) | Main project repository |
+| **REST API Server Folder** | [/server](https://github.com/ruthwikcherukuri841-beep/productivity-dashboard-/tree/main/server) | Backend TypeScript + Express source |
+| **API Summary Folder** | [/api-summary](https://github.com/ruthwikcherukuri841-beep/productivity-dashboard-/tree/main/api-summary) | Complete API & Dashboard documentation |
+| **Live Production Web App** | [Vercel Deployment](https://dashboard-one-gilt-51.vercel.app?_vercel_share=AkaMYc1hdGqmaFHoFCK0ggAdrtsibcAO) | Live Next.js 15 developer productivity dashboard |
+| **Local REST API Base** | `http://localhost:4000` | Local Express REST API Server |
+| **Interactive Swagger UI** | `http://localhost:4000/api-docs` | Interactive Swagger API Playground |
+| **OpenAPI 3.0 Spec** | `http://localhost:4000/api/v1/docs/openapi.json` | OpenAPI 3.0 Machine-readable specification |
 | **Postman Collection** | `http://localhost:4000/api/v1/docs/postman` | Exportable Postman Collection v2.1 |
-| **Health Check & Telemetry** | `http://localhost:4000/api/v1/health` | Service uptime and memory diagnostics |
-| **Users API** | `http://localhost:4000/api/v1/users` | User management endpoints |
-| **Projects API** | `http://localhost:4000/api/v1/projects` | Project initiatives and metrics endpoints |
-| **Tasks API** | `http://localhost:4000/api/v1/tasks` | Sprint tasks and workflow endpoints |
+| **Health Check Endpoint** | `http://localhost:4000/api/v1/health` | Service uptime and memory diagnostics |
 
 ---
 
 ## 🎯 Executive Overview
-The **DevPulse Users, Projects & Tasks REST API** is a modular backend service built in **Node.js + Express + TypeScript**. It provides the core data layer for developer productivity suites, sprint backlogs, initiative tracking, and platform observability workflows.
 
-### 🌟 Key Highlights
-- **Strict Input Validation**: All write operations (`POST`, `PUT`, `PATCH`) and query parameters are validated with **Zod** schemas.
-- **Centralized Error Handling**: Standardized JSON error response format with precise HTTP status codes (`200`, `201`, `204`, `400`, `404`, `409`, `422`, `500`).
-- **Dynamic Progress Syncing**: Tasks automatically recalculate parent project progress percentage and completion ratios on state transitions.
-- **Interactive Documentation**: Built-in **Swagger UI** hosted at `/api-docs`, an exportable **OpenAPI 3.0 specification**, and an importable **Postman Collection v2.1**.
-- **Comprehensive Automated Tests**: 26 integration test cases covering positive workflows, edge cases, constraint violations, and status transitions with 100% pass rate.
+**DevPulse** is a complete, production-grade developer workspace and productivity platform consisting of:
+1. **Frontend**: A **Next.js 15 + React 19 + Tailwind CSS + Framer Motion** dashboard inspired by Linear and Vercel dark aesthetics.
+2. **Backend**: A modular **Node.js + Express 5 + TypeScript** REST API engine providing robust data management for users, initiatives, tasks, and system telemetry.
 
 ---
 
-## 🛠️ Architecture & Technology Stack
+## 🛠️ Complete Full-Stack Architecture
 
 ```
-                                  ┌─────────────────────────────┐
-                                  │       Client / Browser      │
-                                  │ (Dashboard / Swagger / Postman)
-                                  └──────────────┬──────────────┘
-                                                 │ HTTP / JSON
-                                                 ▼
-┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
-│ Express Middleware Pipeline                                                                     │
-│  ├── Helmet (Security Headers)                                                                  │
-│  ├── CORS Handler (Configurable origins)                                                        │
-│  ├── Morgan / Request Logger (Method, URL, Status, Latency)                                     │
-│  └── Zod Schema Validator (Body, Query, Params)                                                 │
-└────────────────────────────────────────────────┬────────────────────────────────────────────────┘
-                                                 │
-                        ┌────────────────────────┼────────────────────────┐
-                        ▼                        ▼                        ▼
-               ┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
-               │ UserController  │      │ProjectController│      │ TaskController  │
-               └────────┬────────┘      └────────┬────────┘      └────────┬────────┘
-                        │                        │                        │
-                        ▼                        ▼                        ▼
-               ┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
-               │   UserService   │      │ ProjectService  │      │   TaskService   │
-               └────────┬────────┘      └────────┬────────┘      └────────┬────────┘
-                        │                        │                        │
-                        └────────────────────────┼────────────────────────┘
-                                                 │
-                                                 ▼
-                               ┌──────────────────────────────────┐
-                               │     In-Memory Database Store     │
-                               │  (Map-based thread-safe storage  │
-                               │   with pre-seeded DevPulse data) │
-                               └──────────────────────────────────┘
+                               ┌────────────────────────────────────────────────────────┐
+                               │           Next.js 15 Dashboard / Browser               │
+                               │   (Kanban, Analytics, Copilot, CI/CD, Command Palette) │
+                               └───────────────────────────┬────────────────────────────┘
+                                                           │ HTTP / JSON
+                                                           ▼
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ Express 5 REST API Server (Port 4000)                                                                   │
+│  ├── Helmet (Security Headers)                                                                          │
+│  ├── CORS (Configurable Origins)                                                                        │
+│  ├── Morgan / Request Logger (Method, URL, Status, Latency)                                             │
+│  └── Zod Schema Validator (Body, Query, Params)                                                         │
+└────────────────────────────────────────────────────┬────────────────────────────────────────────────────┘
+                                                     │
+                         ┌───────────────────────────┼───────────────────────────┐
+                         ▼                           ▼                           ▼
+                ┌──────────────────┐        ┌──────────────────┐        ┌──────────────────┐
+                │  UserController  │        │ ProjectController│        │  TaskController  │
+                └────────┬─────────┘        └────────┬─────────┘        └────────┬─────────┘
+                         │                           │                           │
+                         ▼                           ▼                           ▼
+                ┌──────────────────┐        ┌──────────────────┐        ┌──────────────────┐
+                │   UserService    │        │  ProjectService  │        │   TaskService    │
+                └────────┬─────────┘        └────────┬─────────┘        └────────┬─────────┘
+                         │                           │                           │
+                         └───────────────────────────┼───────────────────────────┘
+                                                     │
+                                                     ▼
+                                   ┌──────────────────────────────────┐
+                                   │     In-Memory Database Store     │
+                                   │  (Map-based thread-safe storage  │
+                                   │   with pre-seeded DevPulse data) │
+                                   └──────────────────────────────────┘
 ```
-
-| Layer | Technology | Purpose |
-| :--- | :--- | :--- |
-| **Runtime & Framework** | Node.js + Express 5 (TypeScript) | Non-blocking, high-performance RESTful routing and middleware pipeline |
-| **Data Validation** | Zod 4.5 | Declarative runtime type validation for bodies, query filters, and path params |
-| **API Documentation** | Swagger UI Express + OpenAPI 3.0 | Interactive API testing playground and machine-readable specification |
-| **Security & Logging** | Helmet, CORS, Morgan | HTTP header protection, cross-origin resource sharing, structured latency logging |
-| **Testing** | Node.js Test Runner + Supertest | Zero-bloat integration and contract test execution |
 
 ---
 
@@ -116,11 +105,11 @@ The **DevPulse Users, Projects & Tasks REST API** is a modular backend service b
 | `POST` | `/api/v1/tasks/reorder` | Batch reorder sprint tasks across columns and update statuses | `200`, `422` |
 | `DELETE` | `/api/v1/tasks/:id` | Delete task -> auto-updates project completion percentage | `204`, `404` |
 
-### 4. 🩺 System Telemetry & Documentation
+### 4. 🩺 System Telemetry & Documentation Endpoints
 | Method | Endpoint | Description | Status Codes |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/api/v1/health` | Memory utilization, uptime, service status, and version | `200` |
-| `GET` | `/api-docs` | Interactive Swagger UI documentation playground | `200` |
+| `GET` | `/api/v1/health` | Process memory (`rss`, `heapTotal`, `heapUsed`), uptime, and version | `200` |
+| `GET` | `/api-docs` | Interactive Swagger UI API playground | `200` |
 | `GET` | `/api/v1/docs/openapi.json` | Raw OpenAPI 3.0 specification JSON | `200` |
 | `GET` | `/api/v1/docs/postman` | Exportable Postman Collection v2.1 | `200` |
 
@@ -128,7 +117,7 @@ The **DevPulse Users, Projects & Tasks REST API** is a modular backend service b
 
 ## 🛡️ Centralized Error Handling Model
 
-Every error response adheres strictly to a predictable JSON envelope:
+All errors follow a unified JSON schema:
 
 ```json
 {
@@ -152,9 +141,33 @@ Every error response adheres strictly to a predictable JSON envelope:
 
 ---
 
-## 🧪 Test Suite Results
+## ✨ Frontend Dashboard Features
 
-```
+1. **Initiative & Work Management**:
+   - Categorized by Core Engine, Frontend, Security, DevOps/SRE, and AI/ML.
+   - Real-time progress bars, health badges, lead avatars, and due date countdowns.
+2. **Interactive 4-Column Kanban Board**:
+   - Smooth status cycling (*Todo*, *In Progress*, *In Review*, *Done*).
+   - Priority indicators (Critical, High, Medium, Low) and story point badges.
+3. **Analytics & Sprint Burndown**:
+   - 4 live KPI cards with SVG sparklines (Velocity, PRs Merged, Quality, Deployments).
+   - Interactive SVG Sprint Burndown trajectory with ideal burn curve.
+4. **DevOps & Infrastructure Telemetry**:
+   - Real-time CI/CD workflow monitor across Staging, Production, and Preview.
+   - Interactive build triggers with animated timers and toast updates.
+   - Cluster health indicators (p99 latency, uptime %, and fault state simulation).
+5. **Universal DevPulse AI Copilot**:
+   - Context-aware assistant inspecting live sprint blockers and infrastructure telemetry.
+   - Multi-persona selector (Architect, Scrum, Debugger, DevOps).
+   - Direct actionable chips in chat to trigger builds and switch tabs.
+6. **Command Palette (`⌘K` / `Ctrl+K`)**:
+   - Quick search and instant navigation across initiatives, tasks, and system actions.
+
+---
+
+## 🧪 Test Suite Results (100% Pass Rate)
+
+```bash
 ✔ Centralized Error Handling & Input Validation (4/4 tests passed)
 ✔ Projects API Endpoints (7/7 tests passed)
 ✔ Tasks API Endpoints (6/6 tests passed)
@@ -165,15 +178,21 @@ Total: 26 passing | 0 failing | 100% Success Rate
 
 ---
 
-## 🚀 Quick Execution Reference
+## 🚀 Commands & Quick Start
 
 ```bash
-# 1. Start server with hot-reload:
+# Start Next.js Frontend Dashboard (Port 3000)
+npm run dev
+
+# Start Backend REST API with Hot-Reload (Port 4000)
 npm run server:dev
 
-# 2. Run automated test suite:
+# Run Backend Automated Integration Tests
 npm run server:test
 
-# 3. Build TypeScript production bundle:
+# Build TypeScript Production Server Bundle
 npm run server:build
+
+# Build Next.js Frontend for Production
+npm run build
 ```
