@@ -3,6 +3,21 @@
 
 ---
 
+## 🚀 Live Server Endpoints & URLs
+
+| Service / Interface | URL | Description |
+| :--- | :--- | :--- |
+| **Server Base URL** | `http://localhost:4000` | Local Express REST API Server |
+| **Interactive Swagger UI** | `http://localhost:4000/api-docs` | Interactive Swagger UI API Playground |
+| **OpenAPI 3.0 Spec** | `http://localhost:4000/api/v1/docs/openapi.json` | Machine-readable OpenAPI specification |
+| **Postman Collection** | `http://localhost:4000/api/v1/docs/postman` | Exportable Postman Collection v2.1 |
+| **Health Check & Telemetry** | `http://localhost:4000/api/v1/health` | Service uptime and memory diagnostics |
+| **Users API** | `http://localhost:4000/api/v1/users` | User management endpoints |
+| **Projects API** | `http://localhost:4000/api/v1/projects` | Project initiatives and metrics endpoints |
+| **Tasks API** | `http://localhost:4000/api/v1/tasks` | Sprint tasks and workflow endpoints |
+
+---
+
 ## 🎯 Executive Overview
 The **DevPulse Users, Projects & Tasks REST API** is a modular backend service built in **Node.js + Express + TypeScript**. It provides the core data layer for developer productivity suites, sprint backlogs, initiative tracking, and platform observability workflows.
 
